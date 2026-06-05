@@ -551,7 +551,7 @@ tr:hover td { background:var(--gray-50); }
     <div class="eng-prac-tabs">
       <button class="eng-prac-tab active" onclick="renderEngPracticeTab('Paper1',this)">📖 Paper 1 Reading</button>
       <button class="eng-prac-tab" onclick="renderEngPracticeTab('Paper2',this)">✍️ Paper 2 Writing</button>
-      <button class="eng-prac-tab disabled" onclick="return">🎧 Paper 3 Listening</button>
+      <button class="eng-prac-tab" onclick="renderEngPracticeTab('Paper3',this)">🎧 Paper 3 Listening</button>
       <button class="eng-prac-tab disabled" onclick="return">🗣️ Paper 4 Speaking</button>
     </div>
     <div id="eng-prac-content">
@@ -593,7 +593,21 @@ tr:hover td { background:var(--gray-50); }
 
 <div class="page" id="page-prac-chi">
   <div class="card">
-    <div class="card-header"><h2>✏️ 中文操練</h2><button class="btn btn-sm btn-cool" onclick="openPracModal('中文')">+ 新增記錄</button></div>
+    <div class="card-header"><h2>✏️ 中文操練</h2></div>
+    <div class="eng-prac-tabs">
+      <button class="eng-prac-tab active" onclick="renderChiPracticeTab('卷三聆聽',this)">🎧 卷三 聆聽綜合</button>
+      <button class="eng-prac-tab disabled" onclick="return">📖 卷一 閱讀</button>
+      <button class="eng-prac-tab disabled" onclick="return">✍️ 卷二 寫作</button>
+      <button class="eng-prac-tab disabled" onclick="return">🗣️ 卷四 說話</button>
+    </div>
+    <div id="chi-prac-content"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;align-items:center;" id="chi-log-row" hidden>
+      <button class="eng-log-btn" onclick="logChiListeningPractice()">📋 記錄到操練表</button>
+      <span style="font-size:12px;color:var(--gray-500);">完成練習後一鍵記錄</span>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px;">
+    <div class="card-header"><h2>📋 中文操練記錄</h2><button class="btn btn-sm btn-cool" onclick="openPracModal('中文')">+ 新增記錄</button></div>
     <div class="table-wrap"><table id="prac-table-chi"><thead><tr><th>日期</th><th>類型</th><th>卷別</th><th>來源</th><th>題號</th><th>得分</th><th>錯誤類型</th><th>錯誤詳情</th><th>改善行動</th><th>覆檢</th><th></th></tr></thead><tbody></tbody></table></div>
   </div>
 </div>
@@ -4303,10 +4317,6 @@ const mathPracticeDB = {
     }
   ]
 };
-
-
-
-// ===== MATH PRACTICE =====
 let mathPracState = {
   mode:'topics', topicId:null, questions:[], answers:{},
   submitted:false, score:0, total:0, showSteps:{}
@@ -5372,7 +5382,96 @@ Paper1:{
     ]
   }
 ]
+},
+Paper3:{
+  recordings:[
+    {
+      id:'p3-1',
+      title:'School Announcement — Activities Fair',
+      type:'通知/公告',
+      duration:'~3分鐘',
+      transcript:'[模擬錄音稿] Good morning everyone. I\'m pleased to announce that our annual Activities Fair will take place next Saturday, the 15th of March, in the school hall from 10 a.m. to 4 p.m. This year, we have over 30 clubs and societies setting up booths, including the Drama Club, the Robotics Society, and for the first time, a Sustainability Club. Each club will give a short presentation about their activities. The Drama Club\'s performance begins at 11 a.m., and the Robotics Society will demonstrate their latest project at 2 p.m. Registration for new members is free, but you must bring your student ID card. If you have any questions, please contact the Student Union office on the second floor.',
+      questions:[
+        {type:'factual', q:'When will the Activities Fair take place?', opts:['Next Friday 15th March','Next Saturday 15th March','This Saturday 15th March','Next Sunday 16th March'], ans:1, explain:'The speaker says "next Saturday, the 15th of March"'},
+        {type:'detail', q:'How many clubs are participating this year?', opts:['15','20','30','Over 30'], ans:3, explain:'"over 30 clubs and societies" — 注意 "over" 的意思'},
+        {type:'inference', q:'Which club is participating for the first time?', opts:['Drama Club','Robotics Society','Sustainability Club','Student Union'], ans:2, explain:'"for the first time, a Sustainability Club"'},
+        {type:'detail', q:'What must students bring to register?', opts:['Registration form','Student ID card','Money for fees','Parent signature'], ans:1, explain:'"you must bring your student ID card"'},
+      ]
+    },
+    {
+      id:'p3-2',
+      title:'Radio Interview — Youth Mental Health',
+      type:'訪問/討論',
+      duration:'~4分鐘',
+      transcript:'[模擬錄音稿] Host: Welcome to Youth Matters. Today we\'re discussing mental health with Dr. Sarah Wong, a clinical psychologist. Dr. Wong, a recent survey found that 60% of secondary school students in Hong Kong report feeling stressed most of the time. Is that surprising? Dr. Wong: Honestly, no. Academic pressure, social media comparison, and uncertainty about the future all contribute. What concerns me more is that only 20% of those students seek help. Host: Why is that? Dr. Wong: Stigma is the main barrier. Many young people fear being labelled as "weak" or "unstable" if they see a counselor. Host: What can schools do? Dr. Wong: Schools should normalise mental health conversations. Simple steps like training teachers to spot early signs, creating peer support groups, and bringing in counselors for regular check-ins can make a huge difference. The research shows that early intervention reduces recovery time by up to 50%. Host: And for students listening right now? Dr. Wong: If you\'re struggling, talk to someone you trust — a teacher, a friend, or call the Samaritans hotline at 2389 2222. You don\'t have to face this alone.',
+      questions:[
+        {type:'factual', q:'What percentage of students report feeling stressed?', opts:['20%','40%','60%','80%'], ans:2, explain:'"60% of secondary school students report feeling stressed"'},
+        {type:'detail', q:'What percentage of stressed students seek help?', opts:['10%','20%','30%','60%'], ans:1, explain:'"only 20% of those students seek help"'},
+        {type:'inference', q:'What does Dr. Wong identify as the main barrier to seeking help?', opts:['Cost of counselling','Stigma and fear of labelling','Lack of counsellors','Parent disapproval'], ans:1, explain:'"Stigma is the main barrier. Many fear being labelled as weak"'},
+        {type:'detail', q:'By how much can early intervention reduce recovery time?', opts:['20%','30%','40%','50%'], ans:3, explain:'"early intervention reduces recovery time by up to 50%"'},
+      ]
+    },
+    {
+      id:'p3-3',
+      title:'Debate — Should School Uniforms Be Abolished?',
+      type:'辯論/討論',
+      duration:'~3分鐘',
+      transcript:'[模擬錄音稿] Speaker A: I firmly believe school uniforms should be abolished. They suppress individuality and self-expression, which are crucial for adolescent development. Research from the University of Cambridge shows that students who choose their own clothing report 25% higher self-confidence scores. Speaker B: I disagree. Uniforms promote equality and reduce bullying based on appearance. A 2023 study in the Journal of Educational Psychology found that schools with uniforms reported 30% fewer bullying incidents related to clothing. Speaker A: But you can address bullying through education, not through uniform enforcement. The cost of uniforms is also a burden — the average Hong Kong family spends HK$3,000 per year on school uniforms alone. Speaker B: The cost argument works both ways — without uniforms, peer pressure to wear expensive brands could cost families even more. A survey showed that 70% of students without uniforms felt pressure to buy branded clothing. Speaker A: That pressure exists regardless of uniforms. The real issue is teaching students to value character over appearance.',
+      questions:[
+        {type:'attitude', q:'What is Speaker A\'s overall position?', opts:['Neutral on uniforms','Strongly against uniforms','Strongly for uniforms','Undecided'], ans:1, explain:'"I firmly believe school uniforms should be abolished" — 明確反對'},
+        {type:'detail', q:'According to Speaker A, how much higher are self-confidence scores with free clothing choice?', opts:['15%','20%','25%','30%'], ans:2, explain:'"25% higher self-confidence scores"'},
+        {type:'inference', q:'What does Speaker B imply about the cost argument?', opts:['Uniforms are always cheaper','Without uniforms, branded clothing costs more','Cost is not important','Schools should pay for uniforms'], ans:1, explain:'"without uniforms, peer pressure to wear expensive brands could cost families even more"'},
+        {type:'detail', q:'What percentage of students without uniforms felt pressure to buy branded clothing?', opts:['30%','50%','70%','80%'], ans:2, explain:'"70% of students without uniforms felt pressure"'},
+      ]
+    }
+  ]
 }
+};
+
+
+// ===== CHINESE LISTENING DATABASE =====
+const chnListeningDB={
+  recordings:[
+    {
+      id:'cl-1',
+      title:'學校講座 — 青少年網絡素養',
+      type:'講座/演講',
+      duration:'~3分鐘',
+      transcript:'[模擬錄音稿] 各位同學，歡迎出席今天的講座。今天我想和大家談談網絡素養這個話題。根據最新調查，香港12至18歲青少年每日平均上網時間超過6小時，其中超過七成時間花在社交媒體上。值得關注的是，有四成受訪者表示曾在網上遭遇欺凌，包括被起底、改圖和散播謠言。此外，有近三成青少年曾未經核實就轉發網上信息，間接助長了假消息的傳播。面對這些問題，我們需要培養「批判性思維」——在接收任何網上信息時，都應先問三個問題：信息的來源是甚麼？發布者有何動機？有沒有其他角度的報道？同時，我們也要學會保護個人私隱，不要在網上隨意分享個人資料如住址、電話和身份證號碼。最後，我想強調，網絡是一把雙刃劍，關鍵在於我們如何使用它。',
+      questions:[
+        {type:'factual', q:'香港12至18歲青少年每日平均上網時間是多少？', opts:['4小時','5小時','6小時','7小時'], ans:2, explain:'「每日平均上網時間超過6小時」'},
+        {type:'detail', q:'有多少受訪者曾在網上遭遇欺凌？', opts:['三成','四成','五成','六成'], ans:1, explain:'「有四成受訪者表示曾在網上遭遇欺凌」'},
+        {type:'inference', q:'講者認為面對網上信息時最重要的是甚麼？', opts:['快速轉發','培養批判性思維','避免上網','只看傳統媒體'], ans:1, explain:'「我們需要培養批判性思維」— 這是講者的核心觀點'},
+        {type:'detail', q:'講者建議不要在網上分享哪類個人資料？', opts:['興趣愛好','住址、電話和身份證號碼','學校名稱','朋友姓名'], ans:1, explain:'「不要在網上隨意分享個人資料如住址、電話和身份證號碼」'},
+      ]
+    },
+    {
+      id:'cl-2',
+      title:'電台討論 — 香港人口老化問題',
+      type:'討論/訪問',
+      duration:'~4分鐘',
+      transcript:'[模擬錄音稿] 主持人：歡迎收聽《城市論壇》。今天我們討論香港人口老化問題。根據政府統計，香港65歲以上人口比例已超過20%，預計2039年將達到33%，即每三人中就有一位長者。陳教授，這個趨勢會帶來甚麼影響？陳教授：影響是多方面的。經濟上，勞動人口減少會拖慢經濟增長，預計未來十年GDP增長率將下降0.5至1個百分點。社會福利開支方面，目前政府用於長者的醫療和社會福利支出已佔總開支的35%，這個比例還會持續上升。主持人：那麼有甚麼應對方法？陳教授：短期可以延後退休年齡、引入外來人才填補勞動力。長遠來說，鼓勵生育才是治本之道。新加坡的經驗值得參考，他們通過住房補貼和育兒假等措施，成功將生育率從0.8提升至1.2，雖然仍低於2.1的替換水平，但方向是正確的。主持人：謝謝陳教授。觀眾朋友，你認為香港應該如何應對人口老化呢？',
+      questions:[
+        {type:'factual', q:'香港65歲以上人口目前佔多少比例？', opts:['超過15%','超過20%','超過25%','超過30%'], ans:1, explain:'「65歲以上人口比例已超過20%」'},
+        {type:'detail', q:'預計2039年65歲以上人口比例將達到多少？', opts:['25%','28%','30%','33%'], ans:3, explain:'「預計2039年將達到33%」'},
+        {type:'inference', q:'陳教授認為長遠來說應對人口老化的治本方法是甚麼？', opts:['延後退休年齡','引入外來人才','鼓勵生育','增加醫療開支'], ans:2, explain:'「長遠來說，鼓勵生育才是治本之道」'},
+        {type:'detail', q:'新加坡通過甚麼措施成功提升生育率？', opts:['免費教育','住房補貼和育兒假','稅收減免','移民政策'], ans:1, explain:'「通過住房補貼和育兒假等措施」'},
+      ]
+    },
+    {
+      id:'cl-3',
+      title:'小組討論 — 傳統文化應否列入學校必修課',
+      type:'小組討論',
+      duration:'~3分鐘',
+      transcript:'[模擬錄音稿] 同學甲：我認為傳統文化應該列入學校必修課。香港學生對中國傳統文化的認識越來越少，一項調查顯示超過六成中學生無法正確解釋「孝道」的含義。將傳統文化列為必修，可以確保每個學生都有基本的文化素養。同學乙：我不同意。學校課程已經非常緊湊，再加入必修課會壓縮其他科目的教學時間。而且，學習傳統文化不一定需要通過必修課，可以通過課外活動和體驗式學習來達到同樣效果。同學丙：我覺得兩位同學都有道理。我的建議是將傳統文化融入現有科目中，例如在中文科加入文言文和文化知識，在歷史科加入傳統禮儀和節日習俗。這樣既不會增加課時壓力，又能達到文化傳承的目的。同學甲：這個方案可以接受，但必須確保內容有系統，不能只是零散地加入幾篇文章。同學乙：同意，而且評核方式也應該多元化，不要只靠筆試。',
+      questions:[
+        {type:'attitude', q:'同學甲對傳統文化列入必修課的態度是甚麼？', opts:['中立','強烈反對','強烈支持','無所謂'], ans:2, explain:'「我認為傳統文化應該列入學校必修課」— 明確支持'},
+        {type:'inference', q:'同學乙反對的理由核心是甚麼？', opts:['傳統文化無用','課程太擠迫','學生不感興趣','老師不夠專業'], ans:1, explain:'「學校課程已經非常緊湊，再加入必修課會壓縮其他科目」'},
+        {type:'detail', q:'調查顯示有多少中學生無法正確解釋「孝道」？', opts:['四成','五成','六成','七成'], ans:2, explain:'「超過六成中學生無法正確解釋孝道的含義」'},
+        {type:'inference', q:'同學丙的折中方案是甚麼？', opts:['取消所有文化課','只做課外活動','融入現有科目','只靠自學'], ans:2, explain:'「將傳統文化融入現有科目中」— 這是折中方案'},
+      ]
+    }
+  ]
 };
 
 // ===== DSE KNOWLEDGE BASE (EXPANDED) =====
@@ -5637,7 +5736,7 @@ function setData(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
 // Initialize form on page load
-document.addEventListener('DOMContentLoaded', function(){ updateGenForm(); quizOnSubjectChange(); loadQuizHistory(); });
+document.addEventListener('DOMContentLoaded', function(){ updateGenForm(); quizOnSubjectChange(); loadQuizHistory(); renderChiPracticeTab('卷三聆聽'); });
 
 // ===== QUOTES =====
 const quotes=[
@@ -5956,6 +6055,21 @@ function renderEngPracticeTab(paper,btn){
     html+=`</div>`;
     html+=`<div id="eng-writing-detail"></div>`;
     el.innerHTML=html;
+  } else if(paper==='Paper3'){
+    const recordings=engPracticeDB.Paper3.recordings;
+    let html=`<div style="margin-bottom:12px;font-size:13px;color:var(--gray-500);">選擇一段聆聽材料，先閱讀模擬錄音稿，然後回答問題（模擬 DSE Paper 3 體驗）：</div>`;
+    html+=`<div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#E65100;">💡 提示：真實 DSE 考試中你會聽到錄音播放兩次。此練習以文字模擬錄音內容，建議先閱讀一次模擬稿，再遮住看題作答。</div>`;
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:16px;">`;
+    recordings.forEach(r=>{
+      html+=`<div onclick="startListeningQuiz('${r.id}')" style="background:#fff;border:2px solid var(--gray-200);border-radius:10px;padding:14px 18px;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--cool)'" onmouseout="this.style.borderColor='var(--gray-200)'">
+        <div style="font-size:14px;font-weight:700;color:var(--cool);margin-bottom:4px;">🎧 ${r.title}</div>
+        <div style="font-size:11px;color:var(--gray-500);">${r.type} · ${r.duration} · ${r.questions.length}題</div>
+      </div>`;
+    });
+    html+=`</div>`;
+    html+=`<div style="text-align:center;"><button class="btn btn-cool" onclick="startListeningQuiz('random')">🔀 隨機選一段</button></div>`;
+    html+=`<div id="eng-listening-area"></div>`;
+    el.innerHTML=html;
   } else {
     el.innerHTML=`<div class="eng-coming"><div class="coming-icon">🚧</div><div class="coming-text">${paper} 互動練習即將推出</div></div>`;
     document.getElementById('eng-log-row').hidden=true;
@@ -6075,14 +6189,19 @@ function submitPassageQuiz(){
   const pct=s.total?Math.round(s.score/s.total*100):0;
   const emoji=pct>=80?'🌟':pct>=60?'👍':pct>=40?'💪':'📖';
   const msg=pct>=80?'出色！繼續保持！':pct>=60?'不錯，再努力些！':pct>=40?'有進步空間，多練習！':'別氣餒，重做一次會更好！';
-  const passage=engPracticeDB.Paper1.passages.find(p=>p.id===s.passageId);
+  const isP3=s.paper==='Paper3';
+  const passage=isP3?engPracticeDB.Paper3.recordings.find(r=>r.id===s.passageId):engPracticeDB.Paper1.passages.find(p=>p.id===s.passageId);
+  const retryFn=isP3?'startListeningQuiz':'startPassageQuiz';
+  const retryLabel=isP3?'🔄 重做此段':'🔄 重做此篇';
+  const backFn=isP3?"renderEngPracticeTab('Paper3')":"renderEngPracticeTab('Paper1')";
+  const backLabel=isP3?'🎧 換聆聽材料':'📖 換文章';
   let resultHtml=`<div style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:12px;padding:24px;text-align:center;margin-top:16px;">
     <div style="font-size:48px;">${emoji}</div>
     <div style="font-size:28px;font-weight:800;color:var(--cool);margin:8px 0;">${s.score}/${s.total}</div>
     <div style="font-size:15px;color:var(--gray-600);">正確率 ${pct}% · ${msg}</div>
     <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn btn-cool" onclick="startPassageQuiz('${s.passageId}')">🔄 重做此篇</button>
-      <button class="btn btn-outline" onclick="renderEngPracticeTab('Paper1')">📖 換文章</button>
+      <button class="btn btn-cool" onclick="${retryFn}('${s.passageId}')">${retryLabel}</button>
+      <button class="btn btn-outline" onclick="${backFn}">${backLabel}</button>
     </div>
   </div>`;
   document.getElementById('eng-result-area').innerHTML=resultHtml;
@@ -6091,16 +6210,76 @@ function submitPassageQuiz(){
   document.getElementById('eng-result-area').scrollIntoView({behavior:'smooth',block:'center'});
 }
 
+function startListeningQuiz(recId){
+  const recordings=engPracticeDB.Paper3.recordings;
+  let recording;
+  if(recId==='random'){
+    recording=recordings[Math.floor(Math.random()*recordings.length)];
+  } else {
+    recording=recordings.find(r=>r.id===recId);
+  }
+  if(!recording) return;
+  const s=engPracState;
+  s.paper='Paper3';
+  s.passageId=recording.id;
+  s.questions=recording.questions;
+  s.answers={};s.submitted=false;s.score=0;s.total=recording.questions.length;s.results=[];
+  document.getElementById('eng-log-row').hidden=true;
+
+  const typeLabels={factual:'📝 Factual',detail:'🔍 Detail',inference:'🧠 Inference',attitude:'🎭 Tone & Attitude'};
+  let html=`<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:13px;color:var(--gray-500);">🎧 ${recording.title} · ${recording.questions.length}題</div>
+    <button class="btn btn-outline btn-sm" onclick="renderEngPracticeTab('Paper3')">↩ 返回聆聽列表</button>
+  </div>`;
+
+  // Collapsible transcript
+  html+=`<div class="eng-quiz-card" style="background:var(--gray-50);border-color:#FF9800;margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleTranscript()">
+      <div class="q-label" style="color:#FF9800;">🎧 ${recording.title} <span style="font-weight:400;font-size:11px;">(${recording.type} · ${recording.duration})</span></div>
+      <div id="transcript-toggle" style="font-size:12px;color:#FF9800;">▼ 展開錄音稿</div>
+    </div>
+    <div id="transcript-content" style="display:none;background:#fff;border-left:4px solid #FF9800;padding:12px 16px;margin-top:10px;border-radius:0 8px 8px 0;font-size:13px;line-height:1.7;max-height:300px;overflow-y:auto;">${recording.transcript}</div>
+  </div>`;
+
+  // Questions
+  recording.questions.forEach((q,qi)=>{
+    html+=`<div class="eng-quiz-card" id="q-card-${qi}">`;
+    html+=`<div class="q-label">${typeLabels[q.type]||q.type} — Question ${qi+1}</div>`;
+    html+=`<div class="q-text">${q.q}</div>`;
+    const letters='ABCD';
+    html+=`<div class="eng-mc-options">${q.opts.map((o,oi)=>`<div class="eng-mc-opt" onclick="selectPassageOpt(${qi},${oi})" id="eng-opt-${qi}-${oi}"><span class="opt-letter">${letters[oi]}</span><span>${o}</span></div>`).join('')}</div>`;
+    html+=`<div class="eng-explain" id="eng-explain-${qi}"></div></div>`;
+  });
+
+  html+=`<div style="text-align:center;margin:20px 0;"><button class="btn btn-cool" style="padding:12px 40px;font-size:16px;" onclick="submitPassageQuiz()">📤 提交所有答案</button></div>`;
+  html+=`<div id="eng-result-area"></div>`;
+
+  document.getElementById('eng-listening-area').innerHTML=html;
+}
+
+function toggleTranscript(){
+  const el=document.getElementById('transcript-content');
+  const toggle=document.getElementById('transcript-toggle');
+  if(el.style.display==='none'){
+    el.style.display='block';
+    toggle.textContent='▲ 收起錄音稿';
+  } else {
+    el.style.display='none';
+    toggle.textContent='▼ 展開錄音稿';
+  }
+}
+
 function logEngPractice(){
   const s=engPracState;
-  const passage=engPracticeDB.Paper1.passages.find(p=>p.id===s.passageId);
+  const isP3=s.paper==='Paper3';
+  const passage=isP3?engPracticeDB.Paper3.recordings.find(r=>r.id===s.passageId):engPracticeDB.Paper1.passages.find(p=>p.id===s.passageId);
   const data=getData(KEYS.prac);
   if(!data.eng) data.eng=[];
   const record={
     id:uid(),
     date:new Date().toISOString().slice(0,10),
-    type:'Reading',
-    paper:'Paper1',
+    type:isP3?'Listening':'Reading',
+    paper:isP3?'Paper3':'Paper1',
     source:'系統練習 ('+passage?.title+')',
     dseYear:passage?.year||'',
     qNum:s.total+'題',
@@ -6115,6 +6294,148 @@ function logEngPractice(){
   renderPrac('eng');
   document.getElementById('eng-log-row').hidden=true;
   alert('✅ 已記錄到操練表！');
+}
+
+// ===== CHINESE LISTENING PRACTICE INTERACTIVE =====
+let chiPracState={tab:'卷三聆聽',recId:null,questions:[],answers:{},submitted:false,score:0,total:0,results:[]};
+
+function renderChiPracticeTab(tab,btn){
+  chiPracState.tab=tab;
+  document.querySelectorAll('#page-prac-chi .eng-prac-tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const el=document.getElementById('chi-prac-content');
+  if(tab==='卷三聆聽'){
+    const recordings=chnListeningDB.recordings;
+    let html=`<div style="margin-bottom:12px;font-size:13px;color:var(--gray-500);">選擇一段聆聽材料，先閱讀模擬錄音稿，然後回答問題（模擬 DSE 卷三甲部體驗）：</div>`;
+    html+=`<div style="background:#FFF3E0;border:1px solid #FFB74D;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#E65100;">💡 提示：真實 DSE 考試中你會聽到錄音播放兩次。此練習以文字模擬錄音內容，建議先閱讀一次模擬稿，再遮住看題作答。</div>`;
+    html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:16px;">`;
+    recordings.forEach(r=>{
+      html+=`<div onclick="startChiListeningQuiz('${r.id}')" style="background:#fff;border:2px solid var(--gray-200);border-radius:10px;padding:14px 18px;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--cool)'" onmouseout="this.style.borderColor='var(--gray-200)'">
+        <div style="font-size:14px;font-weight:700;color:var(--cool);margin-bottom:4px;">🎧 ${r.title}</div>
+        <div style="font-size:11px;color:var(--gray-500);">${r.type} · ${r.duration} · ${r.questions.length}題</div>
+      </div>`;
+    });
+    html+=`</div>`;
+    html+=`<div style="text-align:center;"><button class="btn btn-cool" onclick="startChiListeningQuiz('random')">🔀 隨機選一段</button></div>`;
+    html+=`<div id="chi-listening-area"></div>`;
+    el.innerHTML=html;
+  }
+}
+
+function startChiListeningQuiz(recId){
+  const recordings=chnListeningDB.recordings;
+  let recording;
+  if(recId==='random'){
+    recording=recordings[Math.floor(Math.random()*recordings.length)];
+  } else {
+    recording=recordings.find(r=>r.id===recId);
+  }
+  if(!recording) return;
+  const s=chiPracState;
+  s.recId=recording.id;
+  s.questions=recording.questions;
+  s.answers={};s.submitted=false;s.score=0;s.total=recording.questions.length;s.results=[];
+  document.getElementById('chi-log-row').hidden=true;
+
+  const typeLabels={factual:'📝 事實細節',detail:'🔍 細節理解',inference:'🧠 推斷分析',attitude:'🎭 態度立場'};
+  let html=`<div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:13px;color:var(--gray-500);">🎧 ${recording.title} · ${recording.questions.length}題</div>
+    <button class="btn btn-outline btn-sm" onclick="renderChiPracticeTab('卷三聆聽')">↩ 返回聆聽列表</button>
+  </div>`;
+
+  // Collapsible transcript
+  html+=`<div class="eng-quiz-card" style="background:var(--gray-50);border-color:#FF9800;margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleChiTranscript()">
+      <div class="q-label" style="color:#FF9800;">🎧 ${recording.title} <span style="font-weight:400;font-size:11px;">(${recording.type} · ${recording.duration})</span></div>
+      <div id="chi-transcript-toggle" style="font-size:12px;color:#FF9800;">▼ 展開錄音稿</div>
+    </div>
+    <div id="chi-transcript-content" style="display:none;background:#fff;border-left:4px solid #FF9800;padding:12px 16px;margin-top:10px;border-radius:0 8px 8px 0;font-size:13px;line-height:1.7;max-height:300px;overflow-y:auto;">${recording.transcript}</div>
+  </div>`;
+
+  // Questions
+  recording.questions.forEach((q,qi)=>{
+    html+=`<div class="eng-quiz-card" id="chi-q-card-${qi}">`;
+    html+=`<div class="q-label">${typeLabels[q.type]||q.type} — 第${qi+1}題</div>`;
+    html+=`<div class="q-text">${q.q}</div>`;
+    const letters='ABCD';
+    html+=`<div class="eng-mc-options">${q.opts.map((o,oi)=>`<div class="eng-mc-opt" onclick="selectChiOpt(${qi},${oi})" id="chi-opt-${qi}-${oi}"><span class="opt-letter">${letters[oi]}</span><span>${o}</span></div>`).join('')}</div>`;
+    html+=`<div class="eng-explain" id="chi-explain-${qi}"></div></div>`;
+  });
+
+  html+=`<div style="text-align:center;margin:20px 0;"><button class="btn btn-cool" style="padding:12px 40px;font-size:16px;" onclick="submitChiListeningQuiz()">📤 提交所有答案</button></div>`;
+  html+=`<div id="chi-result-area"></div>`;
+
+  document.getElementById('chi-listening-area').innerHTML=html;
+}
+
+function selectChiOpt(qi,oi){
+  if(chiPracState.submitted) return;
+  const q=chiPracState.questions[qi];
+  q.opts.forEach((_,i)=>{
+    const el=document.getElementById('chi-opt-'+qi+'-'+i);
+    if(el) el.classList.remove('selected');
+  });
+  document.getElementById('chi-opt-'+qi+'-'+oi).classList.add('selected');
+  chiPracState.answers[qi]=oi;
+}
+
+function toggleChiTranscript(){
+  const el=document.getElementById('chi-transcript-content');
+  const toggle=document.getElementById('chi-transcript-toggle');
+  if(el.style.display==='none'){
+    el.style.display='block';
+    toggle.textContent='▲ 收起錄音稿';
+  } else {
+    el.style.display='none';
+    toggle.textContent='▼ 展開錄音稿';
+  }
+}
+
+function submitChiListeningQuiz(){
+  const s=chiPracState;
+  if(s.submitted) return;
+  s.submitted=true;
+  s.score=0;
+  s.questions.forEach((q,qi)=>{
+    const userAns=s.answers[qi];
+    const correctAns=q.ans;
+    const isCorrect=userAns===correctAns;
+    if(isCorrect) s.score++;
+    // Show explanation
+    const explainEl=document.getElementById('chi-explain-'+qi);
+    if(explainEl){
+      explainEl.style.display='block';
+      const letters='ABCD';
+      explainEl.innerHTML=`<div style="color:${isCorrect?'#2E7D32':'#C62828'};font-weight:600;margin-bottom:4px;">${isCorrect?'✅ 正確！':'❌ 錯誤'} 正確答案：${letters[correctAns]}. ${q.opts[correctAns]}</div><div style="font-size:12px;color:var(--gray-600);">${q.explain}</div>`;
+    }
+    // Highlight options
+    q.opts.forEach((_,oi)=>{
+      const optEl=document.getElementById('chi-opt-'+qi+'-'+oi);
+      if(!optEl) return;
+      if(oi===correctAns) optEl.classList.add('correct');
+      else if(oi===userAns && !isCorrect) optEl.classList.add('wrong');
+    });
+  });
+
+  let html=`<div style="text-align:center;margin:20px 0;padding:16px;background:${s.score>=s.total*0.7?'#E8F5E9':'#FFF3E0'};border-radius:10px;">
+    <div style="font-size:24px;font-weight:700;color:${s.score>=s.total*0.7?'#2E7D32':'#E65100'};">${s.score}/${s.total}</div>
+    <div style="font-size:13px;color:var(--gray-500);margin-top:4px;">正確率 ${Math.round(s.score/s.total*100)}%</div>
+    <div style="margin-top:10px;"><button class="btn btn-cool" onclick="renderChiPracticeTab('卷三聆聽')">🔄 換一段聆聽材料</button></div>
+  </div>`;
+  document.getElementById('chi-result-area').innerHTML=html;
+  document.getElementById('chi-log-row').hidden=false;
+}
+
+function logChiListeningPractice(){
+  const s=chiPracState;
+  const recording=chnListeningDB.recordings.find(r=>r.id===s.recId);
+  if(!recording||!s.submitted) return;
+  const table=document.querySelector('#prac-table-chi tbody');
+  const today=new Date().toLocaleDateString('zh-HK');
+  const row=document.createElement('tr');
+  row.innerHTML=`<td>${today}</td><td>聆聽理解</td><td>卷三</td><td>${recording.title}</td><td>全部</td><td>${s.score}/${s.total}</td><td>${s.score<s.total?'聆聽細節遺漏':''}</td><td></td><td>重聽錄音重點段落</td><td></td><td><button class="btn btn-outline btn-sm" onclick="this.closest('tr').remove()">✕</button></td>`;
+  table.prepend(row);
+  document.getElementById('chi-log-row').hidden=true;
 }
 
 function showWritingTask(taskId){
