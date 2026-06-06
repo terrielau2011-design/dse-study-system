@@ -326,6 +326,10 @@ tr:hover td { background:var(--gray-50); }
 /* 音樂播放器 */
 #music-player-container{position:relative;width:100%;padding-bottom:56.25%;background:#000;border-radius:8px;overflow:hidden;}
 #music-player-container iframe,#music-player-container>#music-player{position:absolute;top:0;left:0;width:100%;height:100%;}
+/* 金地雄鼓勵夥伴 */
+@keyframes bubbleIn{from{opacity:0;transform:translateY(10px) scale(0.9);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes jiwoongBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+#jiwoong-avatar.bounce{animation:jiwoongBounce 0.5s ease 2;}
 </style>
 </head>
 <body>
@@ -850,6 +854,22 @@ tr:hover td { background:var(--gray-50); }
       <input type="range" id="float-volume" min="0" max="100" value="50" style="flex:1;accent-color:var(--primary);height:4px;" onchange="musicSetVolume(this.value)">
     </div>
     <div id="float-now-playing" style="padding:0 12px 8px;font-size:11px;color:var(--gray-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+  </div>
+</div>
+
+<!-- ============ 金地雄鼓勵夥伴 ============ -->
+<div id="jiwoong-companion" style="position:fixed;bottom:80px;left:20px;z-index:9997;">
+  <!-- 小頭像按鈕 -->
+  <div id="jiwoong-avatar" onclick="jiwoongClick()" style="width:56px;height:56px;border-radius:50%;overflow:hidden;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);border:3px solid #4CAF50;transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+    <img src="https://dbkpop.com/wp-content/uploads/2023/05/zerobaseone_profile_kim_jiwoong_1.jpg" style="width:100%;height:100%;object-fit:cover;" alt="金地雄">
+  </div>
+  <!-- 對話泡泡 -->
+  <div id="jiwoong-bubble" style="display:none;position:absolute;bottom:65px;left:0;background:#fff;border-radius:16px 16px 16px 4px;padding:14px 16px;max-width:240px;box-shadow:0 4px 16px rgba(0,0,0,0.15);font-size:13px;line-height:1.6;color:var(--gray-800);border:1px solid #E8F5E9;animation:bubbleIn 0.3s ease;">
+    <div id="jiwoong-msg" style="margin-bottom:8px;"></div>
+    <div style="display:flex;gap:6px;justify-content:flex-end;">
+      <button onclick="jiwoongSpeak()" style="background:none;border:1px solid #4CAF50;color:#4CAF50;border-radius:12px;padding:2px 10px;cursor:pointer;font-size:11px;">🔊 讀出</button>
+      <button onclick="jiwoongClose()" style="background:none;border:1px solid var(--gray-300);color:var(--gray-500);border-radius:12px;padding:2px 10px;cursor:pointer;font-size:11px;">✕ 關閉</button>
+    </div>
   </div>
 </div>
 
@@ -9230,6 +9250,101 @@ if('serviceWorker' in navigator){
 if('caches' in window){
   caches.keys().then(function(names){names.forEach(function(name){caches.delete(name);});});
 }
+
+// ============ 金地雄鼓勵夥伴 ============
+const jiwoongMsgs=[
+  "加油！💪 每溫一鐘就離目標近一步！",
+  "你可以嘅！💪 DSE 一定得！",
+  "辛苦了，但所有努力都會有回報嘅 💚",
+  "專心溫書，之後我陪你休息 🎵",
+  "今日嘅汗水，係明日嘅成績單 ✨",
+  "唔好放棄呀！我信你！💚",
+  "休息下先？飲杯水再繼續 💧",
+  "你已經好叻了，繼續保持！🌟",
+  "溫完呢課就獎勵自己聽歌啦 🎶",
+  "地雄都撐你！加油加油！💪",
+  "每日進步少少，累積起來就好多！📈",
+  "你嘅努力唔會白費嘅，信我！💚",
+  "專注當下，未來嘅你會感謝而家嘅自己 ✨",
+  "深呼吸，慢慢嚟，你做得到 🌿",
+  "記住：進步唔需要完美，只需要堅持 💪",
+  "哇又溫咗一陣了，好勤力！🌟",
+  "Dream big, work hard! 💚",
+  "地雄話：你係最叻嘅！😤💚",
+  "溫書辛苦但值得，未來嘅你會多謝自己 🎯",
+  "每個小小嘅步驟都算數，繼續行！🚶"
+];
+let jiwoongLastIdx=-1;
+
+function jiwoongClick(){
+  // 隨機選一條鼓勵語（避免連續重複）
+  let idx;
+  do{ idx=Math.floor(Math.random()*jiwoongMsgs.length); }while(idx===jiwoongLastIdx&&jiwoongMsgs.length>1);
+  jiwoongLastIdx=idx;
+
+  document.getElementById('jiwoong-msg').textContent=jiwoongMsgs[idx];
+  document.getElementById('jiwoong-bubble').style.display='block';
+
+  // 彈跳動畫
+  const avatar=document.getElementById('jiwoong-avatar');
+  avatar.classList.remove('bounce');
+  void avatar.offsetWidth; // 觸發 reflow
+  avatar.classList.add('bounce');
+}
+
+function jiwoongClose(){
+  document.getElementById('jiwoong-bubble').style.display='none';
+}
+
+function jiwoongSpeak(){
+  const msg=document.getElementById('jiwoong-msg').textContent;
+  if(!msg) return;
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const utter=new SpeechSynthesisUtterance(msg);
+    utter.lang='zh-HK';
+    utter.rate=0.9;
+    utter.pitch=1.1;
+    // 嘗試用韓文或中文語音
+    const voices=window.speechSynthesis.getVoices();
+    const koVoice=voices.find(v=>v.lang.startsWith('ko'));
+    const zhVoice=voices.find(v=>v.lang.startsWith('zh'));
+    if(koVoice) utter.voice=koVoice;
+    else if(zhVoice) utter.voice=zhVoice;
+    window.speechSynthesis.speak(utter);
+  }else{
+    alert('此瀏覽器不支援語音功能');
+  }
+}
+
+// 確保語音列表載入
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged=function(){
+    window.speechSynthesis.getVoices();
+  };
+}
+
+// 定時鼓勵（每25分鐘）
+let jiwoongTimer=null;
+function startJiwoongTimer(){
+  if(jiwoongTimer) clearInterval(jiwoongTimer);
+  jiwoongTimer=setInterval(function(){
+    jiwoongClick();
+  },25*60*1000); // 25分鐘
+}
+startJiwoongTimer();
+
+// 頁面載入時顯示歡迎語
+window.addEventListener('load',function(){
+  setTimeout(function(){
+    document.getElementById('jiwoong-msg').textContent='嗨！我係地雄 💚 今日都要加油溫書呀！';
+    document.getElementById('jiwoong-bubble').style.display='block';
+    const avatar=document.getElementById('jiwoong-avatar');
+    avatar.classList.add('bounce');
+    // 8秒後自動收起
+    setTimeout(jiwoongClose,8000);
+  },2000);
+});
 
 // ============ 音樂播放器 ============
 const YT_PLAYLIST='RDFS93cEWcwQA';
