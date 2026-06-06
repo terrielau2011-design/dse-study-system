@@ -330,7 +330,7 @@ tr:hover td { background:var(--gray-50); }
 @keyframes bubbleIn{from{opacity:0;transform:translateY(10px) scale(0.9);}to{opacity:1;transform:translateY(0) scale(1);}}
 @keyframes jiwoongBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 #jiwoong-avatar.bounce{animation:jiwoongBounce 0.5s ease 2;}
-.jiwoong-page-header img{object-fit:cover;object-position:center 20%;}
+.jiwoong-page-header img{object-fit:cover;object-position:center top;}
 </style>
 </head>
 <body>
@@ -912,25 +912,25 @@ tr:hover td { background:var(--gray-50); }
 
 <!-- ============ ZB1 鼓勵夥伴 ============ -->
 <div id="jiwoong-companion" style="position:fixed;bottom:80px;left:20px;z-index:9997;touch-action:none;">
-  <!-- 大頭像按鈕（可拖動） -->
+  <!-- 浮動頭像按鈕（可拖動） -->
   <div id="jiwoong-avatar" onclick="jiwoongClick()" style="width:80px;height:80px;border-radius:50%;overflow:hidden;cursor:grab;box-shadow:0 6px 20px rgba(0,0,0,0.25);border:3px solid #4CAF50;transition:transform 0.3s,box-shadow 0.3s;position:relative;" onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 8px 24px rgba(76,175,80,0.4)'" onmouseout="if(!jiwoongDragging){this.style.transform='scale(1)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.25)'}">
-    <img src="https://i.imgur.com/CbHvdPq.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;" alt="ZB1">
+    <img src="https://i.imgur.com/CbHvdPq.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center top;" alt="ZB1">
     <div style="position:absolute;bottom:2px;right:2px;background:#4CAF50;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;">💚</div>
   </div>
-  <!-- 對話泡泡 -->
-  <div id="jiwoong-bubble" style="display:none;position:absolute;bottom:90px;left:0;background:#fff;border-radius:16px 16px 16px 4px;padding:14px 16px;max-width:320px;box-shadow:0 4px 16px rgba(0,0,0,0.15);font-size:13px;line-height:1.6;color:var(--gray-800);border:1px solid #E8F5E9;animation:bubbleIn 0.3s ease;">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-      <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #4CAF50;flex-shrink:0;box-shadow:0 4px 12px rgba(76,175,80,0.3);">
-        <img id="jiwoong-bubble-img" src="https://i.imgur.com/CbHvdPq.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center 20%;">
+  <!-- 對話泡泡（橫向佈局：左大頭像 + 右文字） -->
+  <div id="jiwoong-bubble" style="display:none;position:absolute;bottom:90px;left:0;background:#fff;border-radius:16px;padding:0;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.18);border:1px solid #E8F5E9;animation:bubbleIn 0.3s ease;">
+    <div style="display:flex;align-items:stretch;">
+      <!-- 左邊：大頭像 -->
+      <div style="width:120px;height:120px;flex-shrink:0;overflow:hidden;">
+        <img id="jiwoong-bubble-img" src="https://i.imgur.com/CbHvdPq.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
       </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;color:#4CAF50;margin-bottom:4px;">ZB1 💚</div>
-        <div id="jiwoong-msg" style="font-weight:500;"></div>
-        <div id="jiwoong-msg-kr" style="font-size:10px;color:#90A4AE;margin-top:3px;font-style:italic;"></div>
+      <!-- 右邊：鼓勵語 -->
+      <div style="padding:14px 16px;display:flex;flex-direction:column;justify-content:center;min-width:180px;">
+        <div style="font-size:10px;font-weight:600;color:#4CAF50;margin-bottom:6px;">ZB1 💚 응원해!</div>
+        <div id="jiwoong-msg-kr" style="font-size:12px;color:#558B2F;margin-bottom:4px;line-height:1.4;"></div>
+        <div id="jiwoong-msg" style="font-size:13px;color:var(--gray-800);font-weight:500;line-height:1.5;border-top:1px solid #C8E6C9;padding-top:4px;"></div>
+        <button onclick="jiwoongClose()" style="align-self:flex-end;background:none;border:1px solid var(--gray-300);color:var(--gray-500);border-radius:12px;padding:2px 10px;cursor:pointer;font-size:10px;margin-top:8px;">✕</button>
       </div>
-    </div>
-    <div style="display:flex;gap:6px;justify-content:flex-end;">
-      <button onclick="jiwoongClose()" style="background:none;border:1px solid var(--gray-300);color:var(--gray-500);border-radius:12px;padding:2px 10px;cursor:pointer;font-size:11px;">✕ 關閉</button>
     </div>
   </div>
 </div>
@@ -9362,8 +9362,8 @@ function jiwoongClick(){
   zb1LastIdx=idx;
 
   const msg=zb1Msgs[idx];
-  document.getElementById('jiwoong-msg').textContent=msg.zh;
   document.getElementById('jiwoong-msg-kr').textContent=msg.kr;
+  document.getElementById('jiwoong-msg').textContent=msg.zh;
   document.getElementById('jiwoong-bubble').style.display='block';
 
   // 每次點擊隨機換浮動頭像和泡泡頭像
@@ -9439,8 +9439,8 @@ startJiwoongTimer();
 // 頁面載入時顯示歡迎語
 window.addEventListener('load',function(){
   setTimeout(function(){
-    document.getElementById('jiwoong-msg').textContent='嗨！💚 今日都要加油溫書呀！';
     document.getElementById('jiwoong-msg-kr').textContent='안녕! 💚 오늘도 공부 화이팅!';
+    document.getElementById('jiwoong-msg').textContent='嗨！💚 今日都要加油溫書呀！';
     document.getElementById('jiwoong-bubble').style.display='block';
     const avatar=document.getElementById('jiwoong-avatar');
     avatar.classList.add('bounce');
